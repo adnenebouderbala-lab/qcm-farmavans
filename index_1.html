@@ -1,0 +1,789 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Évaluation Délégués Farmavans</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style id="qcm-style">
+:root{
+  --ink:#0D1A1F; --muted:#5B6F75; --faint:#8399A0;
+  --paper:#EFF3F3; --surface:#FFFFFF; --raise:#F7FAFA;
+  --line:#D3DFE0; --line-soft:#E4EDED;
+  --teal:#0E7C7B; --teal-soft:#DCEDEC;
+  --rust:#A8551E; --rust-soft:#F5E5D9;
+  --ok:#1B6B45; --ok-soft:#DCEFE4;
+  --no:#A32032; --no-soft:#F7E1E3;
+  --on-accent:#FFFFFF;
+  --brand:#006EB7;
+  --shadow:0 1px 2px rgba(13,26,31,.06),0 8px 24px -12px rgba(13,26,31,.18);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ink:#E4EDED; --muted:#9BB0B5; --faint:#6E858B;
+    --paper:#0A1214; --surface:#111C1F; --raise:#162327;
+    --line:#26383D; --line-soft:#1D2C30;
+    --teal:#4FC3B8; --teal-soft:#0F2E2E;
+    --rust:#E08A4E; --rust-soft:#2E1B10;
+    --ok:#5CC08C; --ok-soft:#11291D;
+    --no:#EC7181; --no-soft:#2C1216;
+    --on-accent:#08181A;
+    --brand:#57ACE2;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E4EDED; --muted:#9BB0B5; --faint:#6E858B;
+  --paper:#0A1214; --surface:#111C1F; --raise:#162327;
+  --line:#26383D; --line-soft:#1D2C30;
+  --teal:#4FC3B8; --teal-soft:#0F2E2E;
+  --rust:#E08A4E; --rust-soft:#2E1B10;
+  --ok:#5CC08C; --ok-soft:#11291D;
+  --no:#EC7181; --no-soft:#2C1216;
+  --on-accent:#08181A;
+  --brand:#57ACE2;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  background:var(--paper); color:var(--ink);
+  font-family:'Archivo','Segoe UI',system-ui,sans-serif;
+  font-size:16px; line-height:1.5; min-height:100vh;
+}
+.fold{padding:0}
+.fold summary{cursor:pointer;padding:16px 18px;font-size:13.5px;color:var(--muted);list-style:none}
+.fold summary::-webkit-details-marker{display:none}
+.fold summary::before{content:'▸ ';color:var(--faint)}
+.fold[open] summary::before{content:'▾ '}
+.fold[open] summary{border-bottom:1px solid var(--line-soft);margin-bottom:14px}
+.fold .code,.fold .row{margin:0 18px 18px}
+.synced{margin:0 0 18px;gap:9px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--faint);flex:none}
+.dot.ok{background:var(--ok)} .dot.ko{background:var(--no)} .dot.load{background:var(--teal)}
+.code{width:100%;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12.5px;line-height:1.5;
+  padding:12px 14px;border:1px solid var(--line);border-radius:9px;background:var(--raise);color:var(--ink);
+  resize:vertical;word-break:break-all}
+.code:focus{outline:2px solid var(--teal);outline-offset:1px}
+.codebox{margin-top:18px}
+.row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brandbar{max-width:780px;margin:0 auto;padding:26px 20px 0;display:flex;align-items:center;gap:14px}
+.brandbar.wide{max-width:1120px}
+.brandbar svg{height:34px;width:auto;color:var(--brand);display:block;flex:none}
+.brandbar .rule{flex:1;height:1px;background:var(--line)}
+.brandbar .ctx{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);white-space:nowrap}
+.brandbar + .wrap{padding-top:18px}
+@media(max-width:520px){.brandbar svg{height:26px}.brandbar .ctx{display:none}}
+.wrap{max-width:780px;margin:0 auto;padding:28px 20px 72px}
+.wrap.wide{max-width:1120px}
+h1,h2,h3{text-wrap:balance;line-height:1.15;font-weight:700;letter-spacing:-.015em}
+.eyebrow{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.serif{font-family:'Source Serif 4',Georgia,serif}
+
+/* ---------- masthead ---------- */
+.mast{display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:26px}
+.mast h1{font-size:clamp(23px,4.4vw,32px)}
+.mast .sub{color:var(--muted);font-size:14px;margin-top:5px}
+.linkish{background:none;border:0;color:var(--faint);font:inherit;font-size:13px;cursor:pointer;padding:6px 2px;border-bottom:1px solid transparent}
+.linkish:hover{color:var(--ink);border-bottom-color:var(--line)}
+
+/* ---------- cards ---------- */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;
+  padding:22px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;
+  text-align:left;font:inherit;color:inherit;cursor:pointer;position:relative;overflow:hidden;
+  transition:transform .16s ease,border-color .16s ease;
+}
+.card:hover{transform:translateY(-2px)}
+.card::before{content:"";position:absolute;inset:0 auto 0 0;width:4px;background:var(--accent)}
+.card.t-gastro{--accent:var(--teal)} .card.t-fer{--accent:var(--rust)}
+.card:hover{border-color:var(--accent)}
+.card h3{font-size:19px}
+.card p{color:var(--muted);font-size:14px;line-height:1.5}
+.card .meta{display:flex;gap:14px;font-size:12px;color:var(--faint);margin-top:auto;padding-top:6px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  padding:4px 9px;border-radius:99px;background:var(--accent-soft);color:var(--accent);align-self:flex-start}
+.t-gastro .chip{--accent:var(--teal);--accent-soft:var(--teal-soft)}
+.t-fer .chip{--accent:var(--rust);--accent-soft:var(--rust-soft)}
+
+/* ---------- form ---------- */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px;box-shadow:var(--shadow)}
+label.fld{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:7px}
+input[type=text],input[type=password]{
+  width:100%;padding:12px 14px;font:inherit;color:var(--ink);
+  background:var(--raise);border:1px solid var(--line);border-radius:9px;
+}
+input:focus-visible,button:focus-visible,.opt:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+.btn{
+  font:inherit;font-weight:600;font-size:15px;cursor:pointer;border:1px solid transparent;
+  padding:12px 20px;border-radius:9px;background:var(--ink);color:var(--paper);
+  transition:opacity .15s ease;
+}
+.btn:hover{opacity:.88}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn.accent{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spread{justify-content:space-between}
+
+/* ---------- exam ---------- */
+.rail{position:sticky;top:0;z-index:5;background:var(--paper);padding:12px 0 14px;margin-bottom:4px}
+.rail .bar{height:5px;border-radius:99px;background:var(--line-soft);overflow:hidden}
+.rail .bar i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s ease}
+.rail .info{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:8px}
+.qnum{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.qtext{font-family:'Source Serif 4',Georgia,serif;font-size:clamp(19px,2.6vw,22px);line-height:1.4;margin:10px 0 20px}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{
+  display:flex;gap:13px;align-items:flex-start;text-align:left;
+  background:var(--surface);border:1px solid var(--line);border-radius:11px;
+  padding:14px 16px;font:inherit;color:inherit;cursor:pointer;line-height:1.45;
+  transition:border-color .14s ease,background .14s ease;
+}
+.opt:hover{border-color:var(--accent)}
+.opt .key{
+  flex:none;width:26px;height:26px;border-radius:7px;background:var(--raise);border:1px solid var(--line);
+  display:grid;place-items:center;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:var(--muted);
+}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.opt[aria-pressed="true"] .key{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:26px}
+
+/* ---------- results ---------- */
+.score{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.ring{--pct:0;flex:none;width:126px;height:126px;border-radius:50%;display:grid;place-items:center;
+  background:conic-gradient(var(--accent) calc(var(--pct)*1%),var(--line-soft) 0)}
+.ring b{width:96px;height:96px;border-radius:50%;background:var(--surface);display:grid;place-items:center;
+  font-family:'IBM Plex Mono',monospace;font-size:27px;font-weight:600;letter-spacing:-.02em}
+.verdict{font-size:20px;font-weight:700;margin-bottom:5px}
+.verdict.ok{color:var(--ok)} .verdict.no{color:var(--no)}
+.corr{display:flex;flex-direction:column;gap:12px;margin-top:26px}
+.item{border:1px solid var(--line);border-left:3px solid var(--bd);border-radius:11px;background:var(--surface);padding:15px 17px}
+.item.good{--bd:var(--ok)} .item.bad{--bd:var(--no)}
+.item .q{font-family:'Source Serif 4',Georgia,serif;font-size:16.5px;line-height:1.45;margin:6px 0 11px}
+.ans{font-size:14px;display:flex;gap:9px;align-items:flex-start;margin-bottom:5px}
+.ans .tag{flex:none;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:5px}
+.tag.ok{background:var(--ok-soft);color:var(--ok)} .tag.no{background:var(--no-soft);color:var(--no)}
+.why{font-size:14px;color:var(--muted);line-height:1.55;margin-top:9px;padding-top:9px;border-top:1px dashed var(--line-soft)}
+.why b{color:var(--ink);font-weight:600}
+.src{font-size:11.5px;color:var(--faint);margin-top:7px;letter-spacing:.02em}
+
+/* ---------- dashboard ---------- */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:15px 17px}
+.stat .n{font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:600;letter-spacing:-.02em;display:block;margin-top:3px}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:600;
+  padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid var(--line-soft);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tr.rowlink{cursor:pointer;transition:background .12s ease}
+tr.rowlink:hover,tr.rowlink:focus-visible{background:var(--line-soft);outline:none}
+tr.rowlink:focus-visible td:first-child{box-shadow:inset 3px 0 0 var(--teal)}
+.seemore{font-size:12.5px;color:var(--faint);white-space:nowrap;font-weight:600}
+tr.rowlink:hover .seemore{color:var(--teal)}
+.pill{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;padding:3px 9px;border-radius:6px}
+.pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.no{background:var(--no-soft);color:var(--no)}
+.tracktag{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:5px}
+.tracktag.g{background:var(--teal-soft);color:var(--teal)} .tracktag.f{background:var(--rust-soft);color:var(--rust)}
+.miss{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+.missrow{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;font-size:13.5px}
+.missrow .gauge{grid-column:1/-1;height:5px;background:var(--line-soft);border-radius:99px;overflow:hidden}
+.missrow .gauge i{display:block;height:100%;background:var(--no);border-radius:99px}
+.note{font-size:13.5px;color:var(--muted);line-height:1.55;background:var(--raise);border:1px solid var(--line-soft);
+  border-radius:10px;padding:13px 15px;margin-top:16px}
+.empty{text-align:center;color:var(--muted);padding:40px 20px;font-size:14.5px}
+h2.sec{font-size:17px;margin:30px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+@media (max-width:520px){.wrap{padding:20px 14px 60px}.ring{width:104px;height:104px}.ring b{width:80px;height:80px;font-size:23px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script id="qcm-data" type="application/json">{"results":[]}</script>
+<script id="qcm-script">
+/* ============================ BANQUES DE QUESTIONS ============================ */
+const BANKS = {
+  gastro: {
+    name: "Gamme Gastro",
+    full: "Dyspepsie · Ulcère · RGO · SII · Gastro-entérite · Ballonnement · Hémorroïdes",
+    tag: "g", cls: "t-gastro", accent: "--teal", soft: "--teal-soft",
+    q: [
+      {q:"Qu'est-ce que « Rome IV » exactement ?",o:["Un protocole thérapeutique européen de la dyspepsie","Les critères d'un consensus mondial d'experts sur les troubles digestifs fonctionnels, version 2016","Une classification endoscopique des lésions gastriques","Une échelle de sévérité des symptômes digestifs"],a:1,w:"La Rome Foundation réunit les experts mondiaux des troubles fonctionnels. Rome I en 1992, Rome IV en 2016 — la version actuelle. Ce sont des critères diagnostiques, pas un protocole de traitement.",s:"Avant de commencer — Rome IV"},
+      {q:"Quelle est la grande idée introduite par Rome IV en 2016 ?",o:["Les troubles fonctionnels sont rebaptisés « troubles de l'interaction cerveau-intestin »","La fibroscopie devient obligatoire avant tout diagnostic fonctionnel","Les troubles fonctionnels sont reclassés comme maladies inflammatoires","Le diagnostic devient exclusivement biologique"],a:0,w:"Ce changement de nom affirme que ces maladies naissent d'un dialogue déréglé entre tube digestif et cerveau. C'est ce qui justifie une gamme couvrant le tube digestif ET le versant cérébral (VITASTRESS).",s:"Avant de commencer — Rome IV"},
+      {q:"Pour parler de dyspepsie fonctionnelle, Rome IV exige des symptômes :",o:["Depuis au moins 6 semaines, début il y a plus de 3 mois","Depuis au moins 3 mois, début il y a plus de 6 mois","Depuis au moins 12 mois, sans condition de début","Sans durée minimale, dès que la fibroscopie est normale"],a:1,w:"≥ 3 mois de symptômes, début ≥ 6 mois. Ces durées garantissent qu'on est face à un trouble chronique installé, pas à un épisode passager.",s:"Fiche 1 — Dyspepsie fonctionnelle"},
+      {q:"Le syndrome de détresse post-prandiale (SDP) se caractérise par :",o:["Une douleur épigastrique nocturne indépendante des repas","Une plénitude post-prandiale et une satiété précoce, déclenchées par le repas","Un pyrosis et des régurgitations acides","Une diarrhée survenant après les repas"],a:1,w:"SDP = symptômes déclenchés par le repas → problème MOTEUR → réponse logique : le prokinétique. Le SDE (douleur/brûlure, même à jeun) est davantage lié à l'acide → IPP.",s:"Fiche 1 — Sous-typage Rome IV"},
+      {q:"Quel mécanisme explique la satiété précoce (« rassasié après trois bouchées ») ?",o:["Un défaut de relaxation du fundus (défaut d'accommodation)","Une hypersécrétion acide de l'antre","Une inflammation de la muqueuse duodénale","Un spasme du pylore"],a:0,w:"Le fundus doit se détendre pour accueillir le repas. S'il reste tendu, la pression monte dès les premières bouchées. C'est l'un des trois mécanismes avec la vidange ralentie et l'hypersensibilité viscérale.",s:"Fiche 1 — Physiopathologie"},
+      {q:"Parmi ces éléments, lequel n'est PAS un signal d'alarme imposant la fibroscopie ?",o:["Un amaigrissement involontaire","Une dysphagie","Des symptômes qui flambent en période de stress","Un début des symptômes après 50 ans"],a:2,w:"Le lien avec le stress oriente au contraire vers le fonctionnel. Les signaux d'alarme sont : amaigrissement, dysphagie, vomissements répétés, anémie/saignement, début > 50 ans, antécédents familiaux de cancer digestif.",s:"Fiche 1 — Raisonnement du médecin"},
+      {q:"Pourquoi l'EMA limite-t-elle le métoclopramide à 5 jours de traitement ?",o:["Risque d'allongement du QT et de torsades de pointes","Risque d'effets extrapyramidaux et de dyskinésies tardives","Perte d'efficacité au-delà de 5 jours (tachyphylaxie)","Risque d'insuffisance rénale"],a:1,w:"Le métoclopramide passe la barrière cérébrale : dystonies, tremblements, dyskinésies tardives parfois irréversibles. C'est la dompéridone qui pose le problème du QT (≤ 30 mg/j, cure courte, restrictions 2014).",s:"Fiche 1 — Les prokinétiques"},
+      {q:"Dans l'essai contrôlé de Wu (2008), le temps de demi-vidange gastrique sous gingembre était de :",o:["26,7 min contre 13,1 min sous placebo","13,1 min contre 26,7 min sous placebo","45 min contre 60 min sous placebo","Identique au placebo, seule la motricité antrale différait"],a:1,w:"13,1 min sous gingembre contre 26,7 min sous placebo — soit une vidange environ deux fois plus rapide, avec en plus une stimulation des contractions antrales.",s:"Fiche 1 — NAUVOM"},
+      {q:"Quelle est la posologie de NAUVOM ?",o:["1 gélule × 2/j au moment des repas","2 gélules le matin à jeun","1 gélule × 3/j, 30 min avant les repas","1 gélule le soir au coucher"],a:2,w:"1 gélule × 3/j, 30 minutes avant les repas — cure de 4 semaines renouvelable, sans limite de durée contrairement aux prokinétiques classiques.",s:"Fiche 1 — Protocole"},
+      {q:"Quelle est la cause n° 1 de gastroparésie ?",o:["Le diabète ancien, par neuropathie du nerf vague","La chirurgie bariatrique","L'infection à H. pylori","La maladie cœliaque"],a:0,w:"L'hyperglycémie chronique abîme le nerf vague. Cercle vicieux : vidange imprévisible → insuline et repas désynchronisés → hypoglycémies précoces puis hyperglycémies tardives → diabète inéquilibrable.",s:"Fiche 1 — Zoom gastroparésie"},
+      {q:"Devant un ulcère, quand les biopsies sont-elles systématiques ?",o:["Pour tout ulcère, gastrique comme duodénal","Uniquement pour l'ulcère gastrique","Uniquement pour l'ulcère duodénal","Seulement si H. pylori est négatif"],a:1,w:"L'ulcère gastrique impose des biopsies des berges et un contrôle endoscopique jusqu'à cicatrisation : un cancer débutant peut ressembler à un ulcère. L'ulcère duodénal n'est presque jamais cancéreux.",s:"Fiche 2 — Diagnostic"},
+      {q:"Le schéma standard d'éradication de H. pylori associe :",o:["IPP + amoxicilline + clarithromycine pendant 10 à 14 jours","Anti-H2 + métronidazole pendant 7 jours","IPP + amoxicilline seule pendant 14 jours","Bismuth + IPP pendant 5 jours"],a:0,w:"Trithérapie IPP + amoxicilline + clarithromycine, 10 à 14 jours. En cas de résistance probable à la clarithromycine ou d'échec : quadrithérapie bismuth. Référence : consensus Maastricht VI (2022).",s:"Fiche 2 — Traitement"},
+      {q:"Pourquoi Saccharomyces boulardii survit-il aux antibiotiques ?",o:["Il est protégé par un enrobage gastro-résistant","C'est une levure, donc naturellement insensible aux antibactériens","Il se prend à distance des prises d'antibiotique","Il ne survit pas : il agit par ses fragments cellulaires"],a:1,w:"C'est l'avantage décisif : levure = champignon microscopique, insensible par nature aux antibiotiques. Il reste vivant et actif pendant les 10 à 14 jours du traitement, là où un probiotique bactérien est détruit dès les premières prises.",s:"Fiche 2 — GASTRODYS"},
+      {q:"Dans la méta-analyse de Szajewska (2015), l'ajout de S. boulardii à l'éradication fait passer le taux d'éradication :",o:["De 73,5 % à 80,5 %, avec des effets indésirables divisés par plus de deux","De 50 % à 90 %","De 60 % à 65 %, sans effet sur la tolérance","Il n'améliore que la tolérance, pas l'éradication"],a:0,w:"80,5 % vs 73,5 % — parce que davantage de patients terminent leur traitement — et effets indésirables réduits de plus de moitié (RR 0,44), surtout la diarrhée. Maastricht VI le reconnaît comme le probiotique au meilleur niveau de preuve.",s:"Fiche 2 — Preuves"},
+      {q:"Quel est le protocole GASTRODYS dans l'éradication de H. pylori ?",o:["1 gélule × 2/j pendant les antibiotiques uniquement","1 gélule × 2/j de J1 jusqu'à 2 semaines après la fin des antibiotiques","1 gélule × 3/j pendant 7 jours","1 gélule/j pendant 3 mois"],a:1,w:"De J1 (premier jour des antibiotiques) jusqu'à 2 semaines après la fin — soit environ 4 semaines pour un traitement de 14 jours. Le prolongement sert à restaurer la flore.",s:"Fiche 2 — Protocole"},
+      {q:"Chez qui GASTRODYS doit-il être évité ?",o:["Le patient diabétique","Le patient sous IPP","L'immunodéprimé et le porteur de cathéter veineux central","Le patient de plus de 65 ans"],a:2,w:"Risque de fongémie décrit avec S. boulardii. C'est sur la notice — et l'énoncer spontanément devant le gastro est un gage de sérieux.",s:"Fiche 2 — Vigilance"},
+      {q:"Un test H. pylori peut être faussement négatif si :",o:["Le patient est à jeun depuis 12 heures","Le patient prend un IPP ou a reçu des antibiotiques récemment","Le patient a plus de 50 ans","Le test est fait le matin"],a:1,w:"Règle : arrêter l'IPP 2 semaines avant, pas d'antibiotique dans les 4 semaines précédentes. Un ulcère qui saigne au moment des biopsies peut aussi négativer le test. C'est la branche « faux négatif » de l'arbre décisionnel.",s:"Fiche 2 — Diagnostic"},
+      {q:"Quelle est la position exacte de NAUVOM dans le RGO ?",o:["Traitement de première intention à la place de l'IPP","Appoint de l'IPP quand une composante motrice est probable","Traitement de la crise, à la demande","Il n'a aucune place dans le RGO"],a:1,w:"Nous ne « traitons » pas le RGO : le pilier reste l'IPP et les règles hygiéno-diététiques. NAUVOM s'ajoute EN APPOINT quand plénitude ou régurgitations tardives suggèrent une vidange lente.",s:"Fiche 3 — Position stricte"},
+      {q:"Les critères de Rome IV du SII exigent une douleur abdominale récurrente :",o:["Au moins 1 jour par semaine sur les 3 derniers mois, + 2 critères sur 3","Quotidienne depuis 6 mois","Au moins 1 jour par mois depuis 1 an","Sans critère de fréquence, dès que la coloscopie est normale"],a:0,w:"Douleur ≥ 1 jour/semaine sur 3 mois (début ≥ 6 mois) + au moins 2 critères sur 3 : liée à la défécation, modification de la fréquence, modification de la consistance des selles.",s:"Fiche 4 — SII"},
+      {q:"À quoi sert l'échelle de Bristol ?",o:["À évaluer l'intensité de la douleur abdominale","À classer la consistance des selles et sous-typer le SII","À grader les hémorroïdes internes","À mesurer la vidange gastrique"],a:1,w:"7 types, du plus dur au plus liquide. Types 1-2 = SII-C (constipation), 6-7 = SII-D (diarrhée), alternance = SII-M. Le sous-type guide le traitement du transit.",s:"Fiche 4 — Sous-typage"},
+      {q:"Dans quelle situation le lopéramide est-il formellement contre-indiqué ?",o:["Diarrhée du voyageur simple","Fièvre élevée ou sang dans les selles","Diarrhée durant plus de 24 heures","Association à un probiotique"],a:1,w:"Risque de rétention du pathogène. Rappel : plus de 2/3 des gastro-entérites sont virales, la réhydratation est LE traitement, et l'antibiotique reste l'exception.",s:"Fiche 5 — Gastro-entérite"},
+      {q:"En prévention de la diarrhée associée aux antibiotiques, S. boulardii :",o:["Réduit le risque d'environ 50 % et diminue le risque de C. difficile","Supprime totalement le risque","N'agit que si donné après l'antibiothérapie","N'a pas d'effet démontré"],a:0,w:"Protocole : GASTRODYS 1 gélule × 2/j dès J1 de l'antibiotique, poursuivi 1 semaine après l'arrêt. Le réflexe à installer : « pas d'antibiotique à risque sans protection du microbiote ».",s:"Fiche 5 — DAA"},
+      {q:"Pourquoi BALLOGAS agit-il là où le charbon a échoué chez Mme Dorra ?",o:["Il adsorbe davantage de gaz que le charbon","Il agit sur la production (gingembre prokinétique) ET l'évacuation des gaz (fenouil carminatif)","Il a un effet laxatif osmotique","Il neutralise l'acidité responsable des gaz"],a:1,w:"Le charbon traite le gaz déjà formé. BALLOGAS travaille en amont — moins de stase donc moins de fermentation — et en aval — évacuation facilitée et spasme réduit par le fenouil, reconnu par l'EMA dans les troubles spasmodiques avec ballonnements.",s:"Fiche 6 — BALLOGAS"},
+      {q:"Devant une rectorragie chez un patient de 47 ans, quelle est la règle absolue ?",o:["Traiter les hémorroïdes, c'est la cause la plus fréquente","Une rectorragie n'est une hémorroïde qu'après avoir éliminé le reste","Prescrire un veinotonique et réévaluer à 3 mois","Demander une NFS et supplémenter en fer"],a:1,w:"Un cancer colorectal saigne exactement de la même façon. Coloscopie si > 45-50 ans, antécédents familiaux, anémie ou transit modifié. Le délégué qui le rappelle spontanément gagne la confiance du gastro.",s:"Fiche 7 — Hémorroïdes"},
+      {q:"Quel antalgique est recommandé dans la crise hémorroïdaire, et lequel est à proscrire ?",o:["Paracétamol recommandé ; AINS et aspirine à proscrire (saignement)","AINS recommandés ; paracétamol inefficace","Aspirine recommandée pour son effet anti-inflammatoire","Tous les antalgiques se valent"],a:0,w:"Les AINS favorisent le saignement hémorroïdaire — c'est l'erreur classique de M. Mounir, qui prend de l'ibuprofène à chaque crise. Le paracétamol est la bonne réponse.",s:"Fiche 7 — Traitement"}
+    ]
+  },
+  fer: {
+    name: "CAPSUFER®",
+    full: "Métabolisme du fer · Carence · Technologie liposomale · Argumentaire gastro",
+    tag: "f", cls: "t-fer", accent: "--rust", soft: "--rust-soft",
+    q: [
+      {q:"Où le fer alimentaire est-il absorbé ?",o:["Tout au long de l'intestin grêle","Uniquement au duodénum et au jéjunum proximal","Principalement dans le côlon","Dans l'estomac, grâce à l'acidité"],a:1,w:"Une zone très étroite, où le pH reste légèrement acide. C'est ce qui rend la maladie cœliaque si problématique : elle détruit précisément cette zone.",s:"Module 1 — Leçon 1"},
+      {q:"Quel est l'apport quotidien en fer recommandé chez l'homme adulte ?",o:["9 mg/jour","16 mg/jour","27 à 35 mg/jour","2 mg/jour"],a:0,w:"9 mg/j chez l'homme, contre 16 mg/j chez la femme réglée et 27 à 35 mg/j chez la femme enceinte — un facteur 3 entre les profils. L'alimentation seule ne couvre presque jamais les besoins de la grossesse.",s:"Module 1 — Leçon 1"},
+      {q:"Le transporteur DMT1 exige, pour fonctionner :",o:["Du fer ferrique (Fe³⁺) et un pH alcalin","Du fer ferreux (Fe²⁺) et un gradient de protons (acidité)","La présence de calcium","Une liaison préalable à la transferrine"],a:1,w:"Le Fe³⁺ doit d'abord être réduit en Fe²⁺ (ferriréductase, vitamine C), et le transport dépend du gradient de protons. Sans acidité, le DMT1 perd son moteur — c'est tout le problème du patient sous IPP.",s:"Module 1 — Leçon 1"},
+      {q:"Qu'est-ce que la ferroportine ?",o:["La protéine de transport du fer dans le sang","La seule protéine d'efflux permettant au fer de sortir de l'entérocyte vers le sang","L'enzyme qui réduit le Fe³⁺ en Fe²⁺","La forme de stockage du fer dans le foie"],a:1,w:"C'est la « porte de sortie ». Le fer peut entrer dans la cellule intestinale, s'il ne peut pas en sortir il sera perdu. La protéine de transport sanguin, elle, est la transferrine.",s:"Module 1 — Leçon 1"},
+      {q:"Quel est l'effet d'une hepcidine élevée ?",o:["Elle augmente l'absorption du fer","Elle dégrade la ferroportine et bloque l'absorption","Elle stimule la ferriréductase","Elle augmente le stockage dans la ferritine musculaire"],a:1,w:"Règle d'or : hepcidine HAUTE → absorption BLOQUÉE ; hepcidine BASSE → absorption LIBÉRÉE. C'est le chef d'orchestre de tout le métabolisme du fer.",s:"Module 1 — Leçon 1"},
+      {q:"Qu'est-ce qui fait monter l'hepcidine ?",o:["L'anémie et l'hypoxie","L'inflammation, l'infection et des réserves pleines","La grossesse et la croissance","Une carence en vitamine C"],a:1,w:"L'inflammation est LE point à retenir pour le gastro : chez un patient MICI, même en rémission, l'inflammation basale maintient l'hepcidine haute. Anémie, hypoxie et besoins augmentés la font au contraire baisser.",s:"Module 1 — Leçon 1"},
+      {q:"Que devient le fer piégé dans l'entérocyte quand la ferroportine est bloquée ?",o:["Il est stocké durablement puis relargué plus tard","Il est éliminé dans les selles avec la desquamation, en 2 à 4 jours","Il repasse dans l'estomac","Il est transformé en fer héminique"],a:1,w:"Les entérocytes vivent 2 à 4 jours puis se détachent. Le fer absorbé mais non exporté part avec eux : il a été « absorbé » sans jamais rejoindre la circulation.",s:"Module 1 — Leçon 1"},
+      {q:"Quel rôle joue la vitamine C dans l'absorption du fer ?",o:["Elle réduit le Fe³⁺ en Fe²⁺, forme absorbable","Elle augmente la sécrétion d'hepcidine","Elle protège l'estomac de l'irritation ferreuse","Elle transporte le fer jusqu'à la moelle osseuse"],a:0,w:"C'est l'alliée du fer — d'où sa présence à 80 mg dans CAPSUFER® 14 mg. Les ennemis sont les tanins (thé, vin), les phytates (céréales complètes), les oxalates et le calcium.",s:"Module 1 — Leçon 1"},
+      {q:"Le fer bisglycinate emprunte quelle voie d'entrée ?",o:["Le DMT1, comme les sels ferreux","Le transporteur de peptides PEPT1","L'endocytose","Le transporteur de l'hème HCP1"],a:1,w:"Sa structure imite un dipeptide (fer + 2 glycines). Mais attention : une fois entré, il ressort par la MÊME ferroportine que le sulfate — donc il est bloqué lui aussi quand l'hepcidine est élevée.",s:"Module 1 — Leçon 3"},
+      {q:"Quelle est la limite technique du bisglycinate ?",o:["Il est détruit par l'acidité gastrique","Le complexe se dissocie à pH supérieur à 6,5, celui du jéjunum","Il ne peut pas être associé à la vitamine C","Il est contre-indiqué chez le sujet âgé"],a:1,w:"Stable en milieu acide, fragile en milieu alcalin. Quatre profils aggravent la dissociation : patient sous IPP, sujet âgé hypochlorhydrique, cœliaque, MICI. Dans ces cas, il se rapproche du sulfate.",s:"Module 2 — Leçon 2"},
+      {q:"Comment le fer liposomal est-il absorbé ?",o:["Par le DMT1, après réduction en Fe²⁺","Par endocytose, fusion membranaire et voie lymphatique des cellules M","Par diffusion passive à travers la muqueuse","Par le transporteur PEPT1"],a:1,w:"Le liposome entre entier. Ces voies ne dépendent ni de l'acidité, ni du DMT1, ni de la ferroportine — et le fer ne touche jamais la muqueuse, d'où la tolérance.",s:"Module 1 — Leçon 3"},
+      {q:"Où se situent les plaques de Peyer, porte d'entrée de la voie lymphatique ?",o:["Dans l'estomac et le duodénum","Principalement dans le jéjunum et l'iléon","Dans le côlon droit","Dans l'œsophage distal"],a:1,w:"C'est l'argument cœliaque : l'atrophie villositaire prédomine sur le duodénum, alors que les plaques de Peyer siègent dans le jéjunum et l'iléon — zones anatomiquement préservées.",s:"Module 2 — Leçon 1"},
+      {q:"Que désigne le sigle MICI ?",o:["Maladies inflammatoires chroniques de l'intestin : maladie de Crohn et rectocolite hémorragique","Maladies infectieuses chroniques de l'intestin","Malabsorption intestinale chronique idiopathique","Maladie inflammatoire du côlon irritable"],a:0,w:"Deux entités : la maladie de Crohn et la rectocolite hémorragique. Ce sont des maladies inflammatoires ORGANIQUES — à ne jamais confondre avec le SII, qui est fonctionnel. C'est leur inflammation chronique qui maintient l'hepcidine élevée.",s:"Module 2 — Raison n° 1"},
+      {q:"Chez un patient dont l'hepcidine est élevée, par quel chemin CAPSUFER® peut-il faire passer le fer dans la circulation ?",o:["En inhibant directement l'hepcidine","Par la voie lymphatique des cellules M des plaques de Peyer, qui ne passe pas par la ferroportine","En augmentant la dose de fer pour saturer le DMT1","En restaurant l'acidité gastrique"],a:1,w:"Le liposome est capturé par les cellules M, transporté vers le tissu lymphoïde, et le fer rejoint la circulation via les macrophages tissulaires — sans emprunter la ferroportine que l'hepcidine dégrade. C'est cette seule propriété qui explique les quatre situations gastro.",s:"Module 2 — Rappel hepcidine"},
+      {q:"Votre patient est sous IPP au long cours pour une œsophagite documentée et sa ferritine est basse. Quelle est la bonne conduite ?",o:["Interrompre l'IPP le temps de la cure de fer","Doubler la dose de fer classique pour compenser","Garder l'IPP et choisir un fer dont l'absorption ne dépend pas de l'acidité gastrique","Espacer la prise du fer et de l'IPP de deux heures"],a:2,w:"Interrompre l'IPP ferait récidiver l'œsophagite, et augmenter la dose ne compense pas le déficit d'acidité — cela ne fait qu'ajouter des effets digestifs. L'absorption liposomale, indépendante du pH gastrique et du DMT1, lève le dilemme : le patient garde son IPP et récupère son fer.",s:"Module 2 — Raison n° 3"},
+      {q:"Pourquoi un patient peut-il prendre CAPSUFER® au moment du repas, même avec du thé ou un laitage ?",o:["Parce que la vitamine C annule l'effet des inhibiteurs alimentaires","Parce que le liposome protège le fer des inhibiteurs alimentaires (tanins, phytates, calcium)","Parce que le fer ferrique n'est pas sensible aux aliments","Parce que la dose est assez élevée pour compenser les pertes"],a:1,w:"La membrane phospholipidique met le fer à l'abri : plus de contrainte d'horaire, ni de « à jeun, loin du thé et des laitages ». C'est un argument d'observance très concret, que le patient comprend immédiatement.",s:"Module 1 — Leçon 3"},
+      {q:"Chez un homme ou une femme ménopausée, une carence en fer impose :",o:["Une supplémentation immédiate au long cours","Une exploration digestive avant toute supplémentation prolongée","Un simple contrôle à 6 mois","Un traitement par fer intraveineux"],a:1,w:"Carence martiale = saignement digestif jusqu'à preuve du contraire → fibroscopie + coloscopie. Supplémenter sans explorer, c'est masquer. C'est le réflexe de sécurité à énoncer spontanément.",s:"Module 1 — Leçon 2"},
+      {q:"Patiente Crohn en rémission, asthénique : NFS normale, ferritine 12 ng/mL, CRP 4 mg/L. Quel raisonnement partager avec le gastro ?",o:["C'est une poussée qui débute, il faut réévaluer le traitement de fond","Ce n'est pas une poussée mais une carence martiale d'inflammation résiduelle : le fer classique sera bloqué à la sortie de l'entérocyte","La ferritine est normale pour une MICI, il n'y a rien à traiter","Il faut passer d'emblée au fer intraveineux"],a:1,w:"Inflammation basale → hepcidine élevée → ferroportine dégradée : le fer entre mais ne sort pas. Le fer IV serait disproportionné pour une carence modérée — c'est le profil type de CAPSUFER® 14 mg, 1 gélule/j pendant 3 mois, avec contrôle ferritine et CRP à M3.",s:"Module 2 — Profil patient n° 1"},
+      {q:"Chez un cœliaque récemment diagnostiqué, pourquoi le bisglycinate ne fait-il pas mieux que le sulfate ?",o:["Il est dégradé par le régime sans gluten","Son transporteur PEPT1 se situe dans la même zone duodénale atrophiée","Il exige une dose deux fois plus élevée","Il est contre-indiqué dans la maladie cœliaque"],a:1,w:"L'atrophie villositaire détruit précisément la zone où travaillent le DMT1 et le PEPT1. Les plaques de Peyer, elles, siègent dans le jéjunum et l'iléon — anatomiquement préservés : c'est l'argument que le gastro entend rarement.",s:"Module 2 — Raison n° 2"},
+      {q:"Un patient a abandonné son sulfate de fer au bout de dix jours pour douleurs et constipation. Qu'est-ce qui change concrètement avec CAPSUFER® ?",o:["La dose de fer est plus faible, donc mieux supportée","Le fer est encapsulé et ne touche jamais la muqueuse : pas de fer libre irritant","Il se prend un jour sur deux","Il contient un antispasmodique associé"],a:1,w:"Pas de contact du fer ferreux libre avec la muqueuse, donc pas de réaction de Fenton ni d'irritation : une tolérance décrite comme comparable au placebo. C'est ce qui rend possible une cure de trois mois — et un entretien au long cours.",s:"Module 1 — Leçon 3"},
+      {q:"Chez un patient suivi par endoscopies répétées pour saignements chroniques, quel avantage pratique supplémentaire apporte CAPSUFER® ?",o:["Il colore les selles, ce qui permet de vérifier l'observance","Il ne provoque pas de selles noires, qui gêneraient la surveillance","Il dispense de la surveillance endoscopique","Il arrête le saignement digestif"],a:1,w:"Les sels ferreux noircissent les selles et brouillent la lecture d'un saignement digestif. Chez ces patients — angiodysplasies, hémorroïdes chroniques, œsophagite — l'entretien au long cours devient praticable sans perturber votre suivi.",s:"Module 2 — Raison n° 4"},
+      {q:"Que contient CAPSUFER® 14 mg ?",o:["Lipofer® (pyrophosphate ferrique micro-encapsulé) + vitamine C 80 mg","Sulfate ferreux + vitamine C","Fer bisglycinate + B9 et B12","Fer liposomal + vitamine D3 seule"],a:0,w:"Lipofer® = pyrophosphate ferrique micronisé et micro-encapsulé, avec 80 mg de vitamine C comme cofacteur de réduction. 1 gélule par jour.",s:"Notice CAPSUFER®"},
+      {q:"Que contient CAPSUFER® Plus, en plus d'un dosage de 25 mg de fer ?",o:["De la vitamine C et du zinc","Les vitamines B9, B12 et D3","Du magnésium et de la vitamine B6","Des probiotiques"],a:1,w:"B9 (200 µg), B12 (2,5 µg) et D3 (5 µg) — les cofacteurs de l'érythropoïèse. C'est ce qui le destine à l'anémie installée, où le clinicien veut voir remonter l'hémoglobine.",s:"Notice CAPSUFER® Plus"},
+      {q:"Chez le gastro-entérologue, quand choisir CAPSUFER® Plus 25 mg plutôt que le 14 mg ?",o:["Systématiquement, c'est le dosage de référence","En cas d'anémie installée ou de femme jeune en carence sévère","Chez tout patient sous IPP","Uniquement en relais d'un fer intraveineux"],a:1,w:"Le réflexe : anémie installée ou femme jeune sévèrement carencée → Plus 25 mg avec B9/B12/D3. Tout le reste — carence latente, entretien, IPP, MICI en rémission → 14 mg avec vitamine C.",s:"Module 2 — Arbitrage"},
+      {q:"Face à l'objection « j'envoie mes cas sévères en fer IV », quelle est la bonne réponse ?",o:["Le fer IV est dépassé, CAPSUFER® le remplace","CAPSUFER® n'est pas son concurrent mais son relais oral, pour maintenir la ferritine et éviter la perfusion suivante","Le fer IV est dangereux, il faut l'éviter","CAPSUFER® permet de doubler les doses de fer IV"],a:1,w:"On ne dénigre jamais le fer IV : il contourne entièrement l'hepcidine, aucun oral ne fait cela. On se positionne en relais après la recharge, et sur les carences modérées qui ne justifient pas un plateau technique.",s:"Module 2 — Objections"}
+    ]
+  }
+};
+const PASS = 0.8;
+
+/* ==========================================================================
+   COLLECTE AUTOMATIQUE DES RÉSULTATS (Google Sheets)
+   Collez entre les guillemets l'URL /exec du script Google Apps Script
+   déployé depuis votre feuille de calcul. Laissez vide pour désactiver :
+   les délégués transmettront alors leur score par code.
+   ========================================================================== */
+const ENDPOINT = 'https://script.google.com/macros/s/AKfycbyeEIWnC5Fx2vHkKPIIm-yBdSQ33N-B9k_XDwTuv3UAIinMdTsppGKYICLhlP5YGXMO/exec';
+const LOGO = '<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Farmavans" viewBox="0 0 2067.000000 618.000000" preserveAspectRatio="xMidYMid meet"> <g transform="translate(0.000000,618.000000) scale(0.100000,-0.100000)" fill="currentColor"> <path d="M2095 6169 c-978 -106 -1782 -800 -2021 -1745 -230 -911 105 -1869 851 -2429 135 -102 333 -221 344 -209 6 7 433 3416 431 3448 0 6 497 7 1251 2 1014 -5 1249 -4 1243 6 -24 40 -142 176 -224 258 -356 354 -797 577 -1300 655 -127 19 -451 27 -575 14z M3975 4519 c-220 -4 -673 -4 -1007 -1 -520 4 -608 3 -608 -9 0 -8 -18 -164 -40 -347 -22 -183 -40 -340 -40 -349 0 -14 45 -15 455 -11 l455 6 0 -22 c0 -11 -18 -158 -40 -325 -22 -168 -40 -310 -40 -316 0 -9 -121 -13 -456 -18 -251 -3 -458 -8 -461 -10 -6 -6 -5 -2 -109 -851 -47 -389 -82 -712 -77 -716 17 -17 278 -33 423 -27 1487 66 2536 1494 2150 2926 l-22 81 -92 -2 c-50 -1 -271 -5 -491 -9z M5595 3759 c-115 -11 -305 -44 -420 -72 l-89 -22 -23 -150 c-12 -82 -22 -157 -23 -166 0 -14 24 -8 143 32 321 109 633 131 755 52 141 -92 113 -274 -54 -352 -27 -13 -159 -52 -294 -86 -135 -35 -279 -75 -320 -90 -410 -148 -566 -447 -411 -788 92 -205 327 -296 683 -267 183 16 201 20 210 55 74 270 75 276 59 270 -97 -38 -257 -54 -356 -35 -202 38 -264 257 -112 397 66 61 141 95 356 161 127 40 215 73 261 100 62 36 70 38 70 21 0 -101 -45 -820 -56 -891 l-6 -37 240 -3 241 -3 5 90 c3 50 8 185 11 300 3 116 12 309 20 430 42 641 41 687 -15 802 -100 204 -417 295 -875 252z M7820 3760 c-154 -19 -262 -82 -359 -210 -30 -39 -55 -70 -58 -70 -2 0 -1 54 3 120 l7 120 -232 0 -231 0 0 -177 c0 -276 -18 -768 -45 -1218 -14 -225 -25 -417 -25 -425 0 -13 34 -15 243 -15 l242 0 2 295 c3 333 17 614 39 740 52 306 281 476 559 417 39 -8 71 -14 71 -13 1 0 -1 95 -5 210 l-6 210 -25 6 c-46 12 -125 17 -180 10z M9200 3746 c-172 -36 -302 -123 -395 -264 -15 -23 -30 -42 -32 -42 -2 0 -1 63 3 140 l7 140 -232 0 -231 0 0 -132 c0 -275 -55 -1470 -76 -1655 l-5 -53 244 0 244 0 6 263 c16 612 44 864 112 1004 73 149 176 218 320 212 101 -5 151 -34 201 -117 39 -64 44 -93 44 -262 0 -168 -42 -997 -55 -1072 l-4 -28 243 0 244 0 6 198 c28 900 47 1028 176 1175 144 163 393 141 479 -43 32 -69 32 -195 1 -735 -11 -198 -23 -414 -27 -480 l-6 -120 242 0 241 0 0 63 c0 96 19 527 36 822 25 428 28 559 15 621 -51 243 -246 374 -556 372 -249 -1 -420 -85 -540 -266 l-39 -59 -23 51 c-79 179 -230 269 -468 277 -69 2 -134 -2 -175 -10z M12020 3739 c-150 -18 -435 -73 -460 -89 -8 -5 -20 -58 -30 -127 -10 -65 -21 -139 -25 -165 l-7 -46 104 38 c296 109 645 145 773 80 127 -66 154 -199 59 -300 -58 -63 -101 -80 -358 -145 -343 -86 -487 -141 -602 -228 -213 -162 -270 -411 -151 -662 85 -178 235 -253 527 -262 135 -4 340 12 354 29 5 5 83 293 81 296 -1 1 -38 -7 -81 -19 -102 -29 -255 -31 -330 -6 -125 43 -188 186 -135 304 46 101 152 163 416 244 182 56 226 73 293 114 l42 26 0 -38 c0 -116 -44 -810 -56 -880 l-5 -33 244 0 244 0 6 278 c4 152 15 417 26 587 32 507 34 555 21 630 -30 185 -141 292 -367 352 -110 29 -430 41 -583 22z M15925 3734 c-16 -2 -66 -9 -110 -15 -82 -10 -301 -52 -366 -69 l-36 -10 -21 -154 c-12 -85 -25 -161 -28 -170 -5 -12 12 -9 78 16 323 119 658 155 801 85 166 -82 148 -280 -33 -361 -33 -15 -163 -54 -288 -86 -371 -95 -509 -153 -630 -265 -172 -159 -210 -392 -103 -620 57 -121 159 -199 316 -241 118 -31 459 -28 548 5 16 6 28 38 59 151 21 79 37 145 35 147 -2 1 -26 -4 -53 -12 -146 -44 -316 -39 -402 11 -129 76 -140 262 -22 368 68 61 137 91 405 175 95 30 184 65 219 86 32 19 60 34 62 32 5 -5 -35 -705 -46 -821 -6 -54 -10 -104 -10 -112 0 -12 41 -14 240 -14 l240 0 0 48 c1 122 22 590 41 892 35 562 24 657 -90 771 -118 118 -264 160 -566 164 -115 2 -223 1 -240 -1z M18296 3730 c-220 -35 -356 -109 -472 -257 -32 -40 -58 -72 -59 -70 -1 1 1 49 6 107 4 58 8 123 8 145 l1 40 -239 1 c-283 1 -251 26 -251 -201 0 -309 -41 -1042 -86 -1562 l-7 -73 250 0 250 0 6 238 c20 720 63 945 213 1097 155 157 402 178 571 49 119 -90 131 -224 88 -929 -8 -132 -17 -289 -21 -350 l-7 -110 244 1 244 0 2 100 c2 54 15 353 29 664 28 605 27 660 -16 784 -35 103 -122 201 -224 253 -120 61 -380 96 -530 73z M19920 3715 c-272 -54 -430 -223 -430 -460 0 -202 78 -312 430 -607 203 -170 230 -205 230 -290 0 -139 -90 -198 -301 -198 -122 0 -233 24 -388 84 -51 20 -94 36 -95 36 -6 0 34 -384 41 -390 4 -4 37 -14 73 -23 244 -58 585 -72 733 -29 278 80 417 236 417 467 0 208 -85 335 -390 580 -180 146 -246 213 -261 267 -20 77 3 139 70 185 96 65 368 57 561 -16 l53 -20 -7 157 c-10 232 -5 217 -84 231 -236 41 -518 53 -652 26z M13214 3694 c34 -90 517 -1570 585 -1794 l8 -25 265 -3 264 -2 39 97 c66 169 447 1075 575 1368 67 154 131 299 141 323 l18 42 -250 0 c-191 0 -251 -3 -254 -12 -2 -7 -109 -296 -238 -643 -129 -346 -241 -647 -248 -667 -7 -21 -16 -38 -19 -38 -3 0 -93 306 -200 681 l-195 681 -248 2 c-190 2 -247 -1 -243 -10z M10077 1223 c-14 -38 -29 -76 -33 -85 -5 -16 1 -18 64 -18 l71 0 61 79 c33 44 60 82 60 85 0 3 -44 6 -98 6 l-99 0 -26 -67z M20163 1273 c-3 -10 -17 -45 -29 -77 -32 -79 -34 -76 45 -76 l69 0 54 73 c30 39 58 78 62 85 5 9 -16 12 -94 12 -87 0 -101 -2 -107 -17z M17047 1273 c-4 -3 -7 -33 -7 -65 l0 -58 100 0 100 0 0 65 0 65 -93 0 c-52 0 -97 -3 -100 -7z M18927 1273 c-4 -3 -7 -33 -7 -65 l0 -58 100 0 100 0 0 65 0 65 -93 0 c-52 0 -97 -3 -100 -7z M4875 1255 c-2 -5 -6 -122 -9 -260 -5 -230 -16 -426 -32 -597 l-7 -68 326 0 c367 0 337 -8 337 86 l0 54 -220 0 -220 0 5 93 c7 116 35 666 35 687 0 19 -210 24 -215 5z M9389 1172 l-77 -15 -6 -69 -7 -68 -48 0 c-48 0 -48 0 -55 -37 -14 -88 -12 -93 45 -93 l52 0 -6 -67 c-19 -203 -19 -397 0 -433 31 -59 72 -75 193 -75 132 0 141 5 156 87 14 75 16 70 -27 58 -54 -16 -86 -12 -116 14 l-28 24 2 149 c2 81 6 169 9 196 l6 47 84 0 c75 0 84 2 84 19 0 10 3 39 6 65 l7 46 -93 0 -92 0 7 85 c6 69 5 85 -6 84 -8 -1 -48 -8 -90 -17z M13360 1171 l-75 -17 -3 -67 -3 -67 -54 0 -55 0 0 -65 0 -65 45 0 45 0 0 -62 c0 -35 -5 -131 -10 -213 -5 -86 -5 -166 0 -189 19 -86 95 -123 233 -113 111 8 113 9 126 74 16 83 17 82 -26 72 -64 -15 -92 -11 -120 17 l-26 26 7 186 c4 102 9 189 12 194 3 4 43 8 90 8 l84 0 0 65 0 65 -85 0 -85 0 0 85 c0 62 -3 85 -12 84 -7 -1 -47 -9 -88 -18z M19455 1172 c-83 -18 -85 -20 -85 -94 l0 -58 -55 0 -55 0 0 -64 0 -65 47 -3 47 -3 -4 -100 c-3 -55 -5 -166 -5 -247 l0 -147 28 -29 c39 -41 100 -56 200 -49 109 7 114 10 126 68 19 87 19 87 -41 76 -120 -21 -133 5 -121 248 l8 180 88 3 87 3 0 64 0 65 -86 0 -85 0 3 85 c3 97 12 91 -97 67z M5780 1024 c-46 -8 -88 -18 -92 -22 -9 -9 -30 -113 -24 -119 2 -3 35 5 73 17 151 48 304 36 319 -26 16 -64 -19 -89 -191 -132 -223 -56 -296 -113 -298 -233 -2 -143 126 -220 326 -195 55 7 55 7 66 50 6 24 13 51 17 60 5 14 3 15 -21 6 -58 -22 -144 -13 -176 19 -72 72 -22 135 146 185 50 15 101 35 114 43 l24 15 -7 -118 c-4 -66 -9 -147 -12 -181 l-6 -63 95 0 95 0 6 103 c3 56 10 178 16 270 12 196 6 230 -45 276 -69 60 -230 77 -425 45z M6961 1026 c-77 -25 -131 -95 -131 -168 0 -58 38 -116 119 -182 159 -128 177 -158 125 -207 -34 -32 -148 -32 -237 -1 l-57 21 6 -72 c4 -40 11 -75 17 -78 21 -14 202 -31 265 -26 134 13 222 86 222 186 0 80 -25 116 -156 220 -95 77 -118 110 -101 148 19 42 114 56 215 29 l52 -13 0 67 c0 82 6 79 -170 86 -92 3 -137 0 -169 -10z M7644 1026 c-114 -22 -111 -20 -119 -82 -4 -31 -5 -57 -3 -60 2 -2 33 6 69 17 38 12 105 23 166 26 l102 6 31 -32 c24 -23 30 -36 25 -53 -15 -49 -46 -66 -185 -103 -266 -70 -346 -152 -295 -304 30 -93 108 -132 253 -130 89 1 114 9 122 39 4 14 10 37 13 52 l7 26 -73 -5 c-87 -7 -132 11 -144 55 -20 76 24 118 167 157 36 9 81 25 101 35 l35 19 -4 -87 c-2 -48 -7 -129 -11 -179 l-7 -93 97 0 96 0 9 193 c20 421 17 438 -81 487 -61 30 -252 38 -371 16z M8652 1022 c-32 -12 -72 -37 -99 -63 l-45 -44 6 56 7 56 -100 0 -101 1 0 -87 c0 -95 -17 -408 -29 -533 l-7 -78 101 0 102 0 6 168 c8 199 18 254 55 307 73 104 220 111 283 12 21 -33 22 -167 2 -409 l-6 -78 100 0 100 0 9 222 c13 336 11 356 -33 408 -62 74 -233 104 -351 62z M9984 1020 c-288 -92 -313 -576 -36 -680 74 -28 211 -36 325 -20 99 14 101 16 112 102 l7 56 -78 -20 c-217 -55 -364 14 -364 172 l0 50 249 0 249 0 7 31 c18 79 -26 200 -91 258 -80 70 -248 92 -380 51z m227 -111 c31 -16 59 -70 59 -111 l0 -38 -161 0 -160 0 7 23 c31 102 98 152 192 142 24 -3 52 -10 63 -16z M11743 1026 c-55 -18 -107 -51 -132 -84 l-20 -27 -1 56 0 55 -94 1 -94 0 -7 -151 c-8 -198 -23 -439 -31 -498 l-6 -48 100 0 100 0 7 137 c13 253 30 322 95 376 76 64 198 55 246 -18 19 -29 21 -172 6 -392 l-7 -103 96 0 96 0 6 103 c27 433 22 496 -44 551 -61 52 -218 72 -316 42z M12534 1020 c-176 -57 -262 -187 -252 -379 8 -149 78 -252 207 -303 82 -32 251 -32 335 1 289 114 302 562 21 671 -85 33 -227 37 -311 10z m230 -143 c110 -62 119 -287 15 -381 -89 -81 -241 -53 -287 53 -25 57 -21 184 8 244 47 99 170 138 264 84z M14055 1021 c-23 -10 -53 -33 -68 -50 l-27 -33 0 45 0 45 -92 -1 -93 -2 -6 -230 c-3 -126 -10 -283 -14 -347 l-8 -118 95 0 95 0 7 177 c12 308 47 373 205 373 l61 0 0 80 0 80 -57 0 c-35 0 -75 -8 -98 -19z M14546 1023 c-148 -45 -238 -182 -239 -362 -2 -265 185 -388 516 -341 100 14 101 15 114 98 9 56 8 62 -6 57 -56 -22 -155 -36 -227 -33 -132 5 -204 72 -204 188 l0 50 250 0 250 0 6 26 c20 79 -23 202 -92 263 -76 67 -246 92 -368 54z m221 -118 c27 -18 48 -57 57 -107 l7 -38 -165 0 -165 0 9 29 c33 117 165 176 257 116z M15655 1022 l-100 -17 -12 -315 c-6 -173 -16 -385 -22 -470 -6 -85 -11 -167 -11 -182 l0 -28 100 0 100 0 0 159 c0 87 3 179 6 204 l7 46 43 -38 c120 -106 334 -88 429 36 59 77 79 143 79 263 1 173 -61 284 -182 331 -78 30 -292 36 -437 11z m334 -137 c88 -45 123 -166 86 -293 -44 -148 -196 -192 -297 -85 -40 42 -48 74 -48 197 0 154 5 174 44 185 51 15 184 13 215 -4z M16735 1021 c-23 -10 -53 -33 -68 -50 l-27 -33 0 45 0 44 -94 0 -93 0 -6 -261 c-4 -143 -10 -300 -13 -348 l-7 -88 97 0 96 0 0 88 c1 361 40 452 198 460 l72 4 0 79 0 79 -57 0 c-35 0 -75 -8 -98 -19z M17648 1021 c-178 -58 -267 -191 -256 -380 13 -216 172 -345 407 -328 209 14 341 142 358 348 14 160 -54 283 -192 345 -80 37 -230 44 -317 15z m240 -150 c57 -40 75 -90 70 -196 -7 -157 -74 -231 -202 -223 -115 7 -168 72 -168 208 0 113 40 191 117 226 46 22 143 14 183 -15z M18615 1021 c-23 -10 -53 -33 -68 -50 l-27 -33 0 45 0 44 -94 0 -93 0 -6 -261 c-4 -143 -10 -300 -13 -348 l-7 -88 97 0 96 0 0 93 c1 356 41 448 198 456 l73 3 -3 77 -3 76 -55 3 c-37 1 -68 -4 -95 -17z M20054 1020 c-154 -50 -248 -218 -231 -408 13 -132 83 -230 197 -273 71 -27 236 -35 339 -17 82 14 80 12 95 109 l7 46 -78 -18 c-230 -55 -373 17 -373 189 l0 32 254 0 254 0 6 33 c13 69 -21 180 -73 239 -70 81 -260 113 -397 68z m230 -115 c30 -20 56 -73 56 -114 l0 -31 -160 0 c-173 0 -169 -1 -145 57 42 99 165 143 249 88z M17036 893 c-14 -309 -28 -548 -32 -555 -3 -4 42 -8 99 -8 l103 0 13 323 c7 177 13 333 14 347 2 25 1 25 -94 28 l-97 3 -6 -138z M18917 963 c-4 -37 -7 -111 -7 -163 0 -100 -17 -396 -25 -442 l-4 -28 102 0 103 0 12 328 c7 180 14 336 15 347 2 19 -5 20 -94 23 l-96 3 -6 -68z M10615 443 c-11 -29 -95 -275 -95 -279 0 -2 29 -4 64 -4 l64 0 86 144 c47 80 86 147 86 150 0 4 -45 6 -99 6 -85 0 -100 -2 -106 -17z"/> </g> </svg>';
+
+
+/* ============================ ÉTAT & OUTILS ============================ */
+const $ = s => document.querySelector(s);
+const app = () => document.getElementById('app');
+let STATE = (() => { try { return JSON.parse(document.getElementById('qcm-data').textContent) || {results:[]}; } catch(e){ return {results:[]}; } })();
+if (!Array.isArray(STATE.results)) STATE.results = [];
+
+/* résultats importés à la main (codes) — restent sur ce navigateur */
+function localResults(){
+  try { const v = JSON.parse(localStorage.getItem('qcm-local') || '[]'); return Array.isArray(v) ? v : []; }
+  catch(e){ return []; }
+}
+function saveLocal(list){ try { localStorage.setItem('qcm-local', JSON.stringify(list)); } catch(e){} }
+let REMOTE = [];
+let remoteState = '';   // '' | 'load' | 'ok' | 'ko'
+
+function allResults(){
+  const seen = {}, out = [];
+  STATE.results.concat(localResults()).concat(REMOTE).forEach(r => { if (r && r.id && !seen[r.id]) { seen[r.id] = 1; out.push(r); } });
+  return out;
+}
+
+/* code de résultat — permet de rapporter un score quand la page ne peut rien enregistrer */
+function b64e(s){ return btoa(String.fromCharCode.apply(null, new TextEncoder().encode(s))).replace(/=+$/,'').replace(/\+/g,'-').replace(/\//g,'_'); }
+function b64d(s){ const t = s.replace(/-/g,'+').replace(/_/g,'/'); return new TextDecoder().decode(Uint8Array.from(atob(t), c => c.charCodeAt(0))); }
+function codeOf(r){
+  return 'FV1-' + b64e(JSON.stringify({i:r.id, n:r.name, t:r.track, a:r.answers.map(x => x===null||x===undefined?9:x).join(''), s:r.ts, m:r.ms}));
+}
+function decodeCode(str){
+  const s = String(str).trim().replace(/\s+/g,'');
+  if (s.indexOf('FV1-') !== 0) return null;
+  try {
+    const o = JSON.parse(b64d(s.slice(4)));
+    if (!o || !BANKS[o.t] || typeof o.a !== 'string') return null;
+    const ans = o.a.split('').map(c => c === '9' ? null : +c);
+    if (ans.length !== BANKS[o.t].q.length) return null;
+    return { id:o.i, name:o.n, track:o.t, answers:ans, ts:o.s, ms:o.m };
+  } catch(e){ return null; }
+}
+
+let view = 'home';        // home | exam | result | coach | detail
+let detailId = null;      // id de la passation ouverte dans l'espace formateur
+let track = null, answers = [], idx = 0, name = '', startedAt = 0;
+let lastResult = null, saveNotice = '';
+
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const pct = (a,b) => b ? Math.round(a/b*100) : 0;
+const fmtDate = ts => { const d = new Date(ts); return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}) + ' · ' + d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}); };
+const fmtDur = ms => { const m = Math.round(ms/60000); return m < 1 ? '< 1 min' : m + ' min'; };
+const scoreOf = r => r.answers.reduce((n,a,i) => n + (a === BANKS[r.track].q[i].a ? 1 : 0), 0);
+
+/* ============================ RENDU ============================ */
+function brandbar(ctx, wide, action){
+  return `<div class="brandbar${wide?' wide':''}">${LOGO}<span class="rule"></span>${
+    action ? action : `<span class="ctx">${esc(ctx)}</span>`}</div>`;
+}
+
+function render(){
+  const el = app();
+  if (view === 'home')   el.innerHTML = brandbar('', false, '<button class="linkish" data-go="coach">Espace formateur</button>') + viewHome();
+  if (view === 'exam')   el.innerHTML = brandbar(BANKS[track].name) + viewExam();
+  if (view === 'result') el.innerHTML = brandbar('Résultat') + viewResult();
+  if (view === 'coach')  el.innerHTML = brandbar('Espace formateur', sessionStorage.getItem('qcm-coach')) + viewCoach();
+  if (view === 'detail') el.innerHTML = brandbar('Espace formateur') + viewDetail();
+  wire();
+  if (view === 'exam') window.scrollTo({top:0,behavior:'instant'});
+}
+
+function viewHome(){
+  return `<div class="wrap">
+    <div class="mast">
+      <div>
+        <p class="eyebrow">Direction Médicale · Gamme gastro-entérologie</p>
+        <h1>Évaluation des acquis</h1>
+        <p class="sub">Contrôle de niveau avant la session de training. Travaillez d'abord votre livret d'auto-formation, puis passez le QCM correspondant.</p>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-bottom:18px">
+      <label class="fld" for="nm">Votre nom et prénom</label>
+      <input type="text" id="nm" placeholder="Saisissez votre nom avant de commencer" value="${esc(name)}" autocomplete="name">
+    </div>
+
+    <div class="grid2">
+      ${Object.entries(BANKS).map(([k,b]) => `
+        <button class="card ${b.cls}" data-track="${k}">
+          <span class="chip">${b.q.length} questions</span>
+          <h3>${esc(b.name)}</h3>
+          <p>${esc(b.full)}</p>
+          <span class="meta"><span>≈ 15 min</span><span>Réussite : ${Math.ceil(b.q.length*PASS)}/${b.q.length}</span></span>
+        </button>`).join('')}
+    </div>
+
+    <p class="note">Le QCM se passe d'une traite : vous répondez aux ${BANKS.gastro.q.length} questions, puis votre score et la correction commentée s'affichent. Votre résultat est transmis automatiquement à la Direction Médicale.</p>
+  </div>`;
+}
+
+function viewExam(){
+  const b = BANKS[track], q = b.q[idx], done = answers.filter(a => a !== null).length;
+  return `<div class="wrap" style="--accent:var(${b.accent});--accent-soft:var(${b.soft})">
+    <div class="rail">
+      <div class="info"><span>${esc(b.name)} · ${esc(name)}</span><span class="mono">${done}/${b.q.length} répondues</span></div>
+      <div class="bar"><i style="width:${pct(idx+1,b.q.length)}%"></i></div>
+    </div>
+    <p class="qnum">Question ${idx+1} sur ${b.q.length}</p>
+    <p class="qtext">${esc(q.q)}</p>
+    <div class="opts">
+      ${q.o.map((o,i) => `<button class="opt" data-pick="${i}" aria-pressed="${answers[idx]===i}">
+        <span class="key">${'ABCD'[i]}</span><span>${esc(o)}</span></button>`).join('')}
+    </div>
+    <div class="nav">
+      <button class="btn ghost" data-nav="-1" ${idx===0?'disabled':''}>Précédent</button>
+      ${idx === b.q.length-1
+        ? `<button class="btn accent" data-submit ${done < b.q.length ? 'disabled' : ''}>${done < b.q.length ? `Il reste ${b.q.length-done} question(s)` : 'Valider mes réponses'}</button>`
+        : `<button class="btn accent" data-nav="1">Suivant</button>`}
+    </div>
+  </div>`;
+}
+
+function viewResult(){
+  const r = lastResult, b = BANKS[r.track], sc = scoreOf(r), p = pct(sc,b.q.length), ok = sc >= Math.ceil(b.q.length*PASS);
+  return `<div class="wrap" style="--accent:var(${ok?'--ok':'--no'});--accent-soft:var(${b.soft})">
+    <div class="mast"><div>
+      <p class="eyebrow">${esc(b.name)} · ${esc(r.name)}</p>
+      <h1>Votre résultat</h1>
+    </div></div>
+    <div class="panel">
+      <div class="score">
+        <div class="ring" style="--pct:${p}"><b>${sc}/${b.q.length}</b></div>
+        <div>
+          <p class="verdict ${ok?'ok':'no'}">${ok ? 'Niveau validé' : 'Niveau à consolider'}</p>
+          <p style="color:var(--muted);font-size:14.5px;max-width:44ch">${ok
+            ? 'Vous maîtrisez la pathologie et le produit. Relisez tout de même la correction ci-dessous : les points ratés seront travaillés en training.'
+            : `Seuil de réussite : ${Math.ceil(b.q.length*PASS)}/${b.q.length}. Reprenez les fiches correspondant à vos erreurs avant la session — la correction ci-dessous vous indique lesquelles.`}</p>
+          <p class="src" style="margin-top:10px">${p}% de bonnes réponses · durée ${fmtDur(r.ms)} · ${saveNotice || 'résultat transmis à la Direction Médicale'}</p>
+        </div>
+      </div>
+    </div>
+    ${saveNotice ? `<div class="panel codebox">
+      <p class="eyebrow">Transmettre votre résultat</p>
+      <p style="font-size:14.5px;color:var(--muted);margin:6px 0 12px;max-width:60ch">Cette page n'a pas pu envoyer votre score automatiquement. Copiez le code ci-dessous et envoyez-le à votre formateur — il contient votre nom, votre score et le détail de vos réponses.</p>
+      <textarea id="rescode" class="code" readonly rows="3">${esc(codeOf(r))}</textarea>
+      <div class="row" style="margin-top:12px"><button class="btn" data-copy>Copier mon code</button><span class="src" id="copyok"></span></div>
+    </div>` : `<details class="panel codebox fold">
+      <summary>Code de secours — uniquement si le formateur vous le demande</summary>
+      <textarea id="rescode" class="code" readonly rows="3">${esc(codeOf(r))}</textarea>
+      <div class="row" style="margin-top:12px"><button class="btn ghost" data-copy>Copier mon code</button><span class="src" id="copyok"></span></div>
+    </details>`}
+
+    <h2 class="sec">Correction commentée</h2>
+    <div class="corr">
+      ${b.q.map((q,i) => {
+        const good = r.answers[i] === q.a;
+        return `<div class="item ${good?'good':'bad'}">
+          <p class="eyebrow">Question ${i+1}</p>
+          <p class="q">${esc(q.q)}</p>
+          ${!good ? `<p class="ans"><span class="tag no">Votre réponse</span><span>${esc(q.o[r.answers[i]])}</span></p>` : ''}
+          <p class="ans"><span class="tag ok">${good?'Votre réponse':'Bonne réponse'}</span><span>${esc(q.o[q.a])}</span></p>
+          <p class="why">${esc(q.w)}</p>
+          <p class="src">↳ ${esc(q.s)}</p>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="nav"><button class="btn ghost" data-go="home">Retour à l'accueil</button></div>
+  </div>`;
+}
+
+function viewCoach(){
+  if (!sessionStorage.getItem('qcm-coach')) {
+    return `<div class="wrap"><div class="mast"><div>
+        <p class="eyebrow">Accès réservé</p><h1>Espace formateur</h1>
+      </div><button class="linkish" data-go="home">Retour</button></div>
+      <div class="panel">
+        <label class="fld" for="cd">Code d'accès</label>
+        <input type="password" id="cd" placeholder="Code formateur">
+        <div class="row" style="margin-top:14px"><button class="btn" data-code>Ouvrir le tableau de bord</button></div>
+      </div></div>`;
+  }
+  const rs = allResults().slice().sort((a,b) => b.ts - a.ts);
+  const byTrack = k => rs.filter(r => r.track === k);
+  const avg = arr => arr.length ? Math.round(arr.reduce((n,r) => n + pct(scoreOf(r), BANKS[r.track].q.length), 0)/arr.length) : 0;
+  const passed = rs.filter(r => scoreOf(r) >= Math.ceil(BANKS[r.track].q.length*PASS)).length;
+
+  const missBlock = k => {
+    const list = byTrack(k); if (!list.length) return '';
+    const b = BANKS[k];
+    const rates = b.q.map((q,i) => ({i, q:q.q, s:q.s, fail: pct(list.filter(r => r.answers[i] !== q.a).length, list.length)}))
+                     .filter(x => x.fail > 0).sort((a,b2) => b2.fail - a.fail).slice(0,6);
+    if (!rates.length) return `<p class="note">${esc(b.name)} — aucune erreur sur ce parcours.</p>`;
+    return `<h2 class="sec">${esc(b.name)} — questions les plus ratées</h2>
+      <div class="miss">${rates.map(x => `<div>
+        <div class="missrow">
+          <span class="mono" style="color:var(--no);font-weight:600">${x.fail}%</span>
+          <span>${esc(x.q)}</span>
+          <span class="src" style="white-space:nowrap">${esc(x.s)}</span>
+        </div>
+        <div class="gauge"><i style="width:${x.fail}%"></i></div>
+      </div>`).join('')}</div>`;
+  };
+
+  return `<div class="wrap wide">
+    <div class="mast"><div>
+      <p class="eyebrow">Direction Médicale · Gamme gastro-entérologie</p>
+      <h1>Tableau de bord formateur</h1>
+      <p class="sub">Résultats en temps réel — actualisez la page pour voir les dernières validations.</p>
+    </div><button class="linkish" data-go="home">Retour à l'accueil</button></div>
+
+    <div class="stats">
+      <div class="stat"><p class="eyebrow">Passations</p><span class="n">${rs.length}</span></div>
+      <div class="stat"><p class="eyebrow">Niveau validé</p><span class="n">${passed}<span style="font-size:15px;color:var(--faint)"> / ${rs.length}</span></span></div>
+      <div class="stat"><p class="eyebrow">Moyenne gastro</p><span class="n">${avg(byTrack('gastro'))}%</span></div>
+      <div class="stat"><p class="eyebrow">Moyenne CAPSUFER</p><span class="n">${avg(byTrack('fer'))}%</span></div>
+    </div>
+
+    ${rs.length ? `<div class="tblwrap"><table>
+      <thead><tr><th>Délégué</th><th>Parcours</th><th>Score</th><th>%</th><th>Durée</th><th>Date</th><th>Détail</th></tr></thead>
+      <tbody>${rs.map(r => {
+        const b = BANKS[r.track], sc = scoreOf(r), p = pct(sc,b.q.length), ok = sc >= Math.ceil(b.q.length*PASS);
+        return `<tr class="rowlink" data-detail="${esc(r.id)}" tabindex="0" role="button" aria-label="Voir le détail de ${esc(r.name)}">
+          <td style="font-weight:600">${esc(r.name)}</td>
+          <td><span class="tracktag ${b.tag}">${esc(b.name)}</span></td>
+          <td><span class="pill ${ok?'ok':'no'}">${sc}/${b.q.length}</span></td>
+          <td class="mono">${p}%</td>
+          <td class="mono" style="color:var(--muted)">${fmtDur(r.ms)}</td>
+          <td class="mono" style="color:var(--muted)">${fmtDate(r.ts)}</td>
+          <td class="seemore">${b.q.length - sc} erreur${b.q.length-sc>1?'s':''} →</td>
+        </tr>`;
+      }).join('')}</tbody></table></div>`
+    : `<div class="tblwrap"><p class="empty">Aucune passation pour l'instant. Les résultats s'afficheront ici dès que les délégués auront validé leur QCM.</p></div>`}
+
+    ${ENDPOINT ? `<div class="row synced">
+      <span class="dot ${remoteState}"></span>
+      <span class="src">${remoteState === 'load' ? 'Lecture de la feuille Google en cours…'
+        : remoteState === 'ok' ? REMOTE.length + ' résultat' + (REMOTE.length>1?'s':'') + ' lu' + (REMOTE.length>1?'s':'') + ' dans la feuille Google.'
+        : remoteState === 'ko' ? 'Feuille Google injoignable — seuls les résultats importés par code s\'affichent.'
+        : 'Feuille Google non consultée.'}</span>
+      <button class="linkish" data-refresh>Actualiser</button>
+    </div>` : ''}
+
+    <h2 class="sec">Ajouter des résultats reçus par code</h2>
+    <div class="panel">
+      <p style="font-size:14.5px;color:var(--muted);margin-bottom:12px;max-width:66ch">Collez ici les codes que les délégués vous ont envoyés — un par ligne. Ils rejoignent le tableau ci-dessus et sont conservés sur ce navigateur.</p>
+      <textarea id="imp" class="code" rows="4" placeholder="FV1-..."></textarea>
+      <div class="row" style="margin-top:12px"><button class="btn" data-import>Ajouter au tableau</button><span class="src" id="impmsg"></span></div>
+    </div>
+
+    ${missBlock('gastro')}
+    ${missBlock('fer')}
+    ${rs.length ? `<p class="note"><b>Comment lire ce tableau.</b> Cliquez sur la ligne d'un délégué pour voir exactement les questions qu'il a ratées, ce qu'il a répondu et les fiches à lui faire reprendre. Le pourcentage d'échec par question, lui, vous dit où l'auto-formation n'a pas pris pour le groupe : consacrez le training aux fiches qui remontent le plus haut plutôt qu'à un rappel général.</p>` : ''}
+  </div>`;
+}
+
+function viewDetail(){
+  if (!sessionStorage.getItem('qcm-coach')) { view = 'coach'; return viewCoach(); }
+  const r = allResults().find(x => x.id === detailId);
+  if (!r) return `<div class="wrap"><div class="panel"><p class="empty">Passation introuvable.</p>
+    <div class="nav"><button class="btn ghost" data-go="coach">Retour au tableau de bord</button></div></div></div>`;
+
+  const b = BANKS[r.track], sc = scoreOf(r), p = pct(sc, b.q.length);
+  const seuil = Math.ceil(b.q.length * PASS), ok = sc >= seuil;
+  const miss = b.q.map((q,i) => ({q, i})).filter(x => r.answers[x.i] !== x.q.a);
+
+  // fiches à retravailler, dédoublonnées et comptées
+  const fiches = {};
+  miss.forEach(x => { fiches[x.q.s] = (fiches[x.q.s] || 0) + 1; });
+  const ficheList = Object.entries(fiches).sort((a,c) => c[1] - a[1]);
+
+  return `<div class="wrap" style="--accent:var(${ok?'--ok':'--no'});--accent-soft:var(${b.soft})">
+    <div class="mast"><div>
+      <p class="eyebrow">${esc(b.name)} · ${fmtDate(r.ts)} · durée ${fmtDur(r.ms)}</p>
+      <h1>${esc(r.name)}</h1>
+    </div><button class="linkish" data-go="coach">Retour au tableau de bord</button></div>
+
+    <div class="panel">
+      <div class="score">
+        <div class="ring" style="--pct:${p}"><b>${sc}/${b.q.length}</b></div>
+        <div>
+          <p class="verdict ${ok?'ok':'no'}">${ok ? 'Niveau validé' : 'Niveau à consolider'}</p>
+          <p style="color:var(--muted);font-size:14.5px;max-width:46ch">${miss.length
+            ? `${miss.length} erreur${miss.length>1?'s':''} sur ${b.q.length}. Seuil de réussite : ${seuil}/${b.q.length}.`
+            : `Sans faute. Rien à reprendre avec ce délégué sur ce parcours.`}</p>
+          ${ficheList.length ? `<p class="src" style="margin-top:10px">À faire reprendre : ${ficheList.map(f => esc(f[0]) + (f[1] > 1 ? ` (${f[1]} erreurs)` : '')).join(' · ')}</p>` : ''}
+        </div>
+      </div>
+    </div>
+
+    ${miss.length ? `<h2 class="sec">Questions ratées</h2>
+    <div class="corr">
+      ${miss.map(x => `<div class="item bad">
+        <p class="eyebrow">Question ${x.i+1}</p>
+        <p class="q">${esc(x.q.q)}</p>
+        <p class="ans"><span class="tag no">Sa réponse</span><span>${r.answers[x.i] === null || r.answers[x.i] === undefined ? 'Aucune réponse' : esc(x.q.o[r.answers[x.i]])}</span></p>
+        <p class="ans"><span class="tag ok">Bonne réponse</span><span>${esc(x.q.o[x.q.a])}</span></p>
+        <p class="why">${esc(x.q.w)}</p>
+        <p class="src">↳ ${esc(x.q.s)}</p>
+      </div>`).join('')}
+    </div>` : ''}
+
+    <h2 class="sec">Feuille de route de ce délégué</h2>
+    <p class="note">${miss.length
+      ? `Reprenez avec lui, dans l'ordre : ${ficheList.map(f => `<b>${esc(f[0])}</b>`).join(', ')}. Faites-lui reformuler le mécanisme à voix haute avant de passer au jeu de rôle — une question ratée sur le mécanisme se traduit toujours par un pitch approximatif devant le médecin.`
+      : `Ce délégué peut passer directement au jeu de rôle. Confiez-lui l'adaptation de pitch la plus exigeante de la session.`}</p>
+
+    <div class="nav"><button class="btn ghost" data-go="coach">Retour au tableau de bord</button></div>
+  </div>`;
+}
+
+/* ============================ INTERACTIONS ============================ */
+function wire(){
+  document.querySelectorAll('[data-go]').forEach(el => el.onclick = () => {
+    view = el.dataset.go; render();
+    if (view === 'coach' && ENDPOINT && !remoteState && sessionStorage.getItem('qcm-coach')) loadRemote();
+  });
+  const nm = document.getElementById('nm'); if (nm) nm.oninput = e => { name = e.target.value; };
+
+  document.querySelectorAll('[data-track]').forEach(el => el.onclick = () => {
+    const n = (document.getElementById('nm')?.value || '').trim();
+    if (!n) { const f = document.getElementById('nm'); f.focus(); f.style.borderColor = 'var(--no)'; return; }
+    name = n; track = el.dataset.track; answers = new Array(BANKS[track].q.length).fill(null);
+    idx = 0; startedAt = Date.now(); view = 'exam'; render();
+  });
+
+  document.querySelectorAll('[data-pick]').forEach(el => el.onclick = () => {
+    answers[idx] = +el.dataset.pick;
+    if (idx < BANKS[track].q.length - 1) { idx++; render(); } else render();
+  });
+  document.querySelectorAll('[data-nav]').forEach(el => el.onclick = () => {
+    idx = Math.min(Math.max(idx + (+el.dataset.nav), 0), BANKS[track].q.length - 1); render();
+  });
+
+  document.querySelectorAll('[data-detail]').forEach(el => {
+    const open = () => { detailId = el.dataset.detail; view = 'detail'; render(); window.scrollTo({top:0,behavior:'instant'}); };
+    el.onclick = open;
+    el.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } };
+  });
+
+  const rf = document.querySelector('[data-refresh]');
+  if (rf) rf.onclick = () => { remoteState = ''; loadRemote(); };
+
+  const cp = document.querySelector('[data-copy]');
+  if (cp) cp.onclick = async () => {
+    const ta = document.getElementById('rescode'); const msg = document.getElementById('copyok');
+    ta.select(); ta.setSelectionRange(0, 99999);
+    let ok = false;
+    try { await navigator.clipboard.writeText(ta.value); ok = true; } catch(e){ try { ok = document.execCommand('copy'); } catch(e2){ ok = false; } }
+    msg.textContent = ok ? 'Code copié — envoyez-le à votre formateur.' : 'Sélectionnez le texte ci-dessus et copiez-le (Ctrl+C).';
+  };
+
+  const imp = document.querySelector('[data-import]');
+  if (imp) imp.onclick = () => {
+    const ta = document.getElementById('imp'), msg = document.getElementById('impmsg');
+    const lines = (ta.value || '').split(/[\r\n]+/).map(s => s.trim()).filter(Boolean);
+    if (!lines.length) { msg.textContent = 'Collez au moins un code.'; return; }
+    const list = localResults(); let add = 0, dup = 0, bad = 0;
+    lines.forEach(l => {
+      const rec = decodeCode(l);
+      if (!rec) { bad++; return; }
+      if (allResults().some(r => r.id === rec.id) || list.some(r => r.id === rec.id)) { dup++; return; }
+      list.push(rec); add++;
+    });
+    saveLocal(list);
+    const parts = [];
+    if (add) parts.push(add + ' résultat' + (add>1?'s':'') + ' ajouté' + (add>1?'s':''));
+    if (dup) parts.push(dup + ' déjà présent' + (dup>1?'s':''));
+    if (bad) parts.push(bad + ' code' + (bad>1?'s':'') + ' illisible' + (bad>1?'s':''));
+    ta.value = '';
+    if (add) { render(); const m = document.getElementById('impmsg'); if (m) m.textContent = parts.join(' · '); }
+    else msg.textContent = parts.join(' · ');
+  };
+
+  const sub = document.querySelector('[data-submit]');
+  if (sub) sub.onclick = () => submit();
+
+  const cd = document.querySelector('[data-code]');
+  if (cd) cd.onclick = () => {
+    const v = (document.getElementById('cd').value || '').trim().toUpperCase();
+    if (v === 'FARMA2026') { sessionStorage.setItem('qcm-coach','1'); render(); if (ENDPOINT && !remoteState) loadRemote(); }
+    else { const f = document.getElementById('cd'); f.value=''; f.style.borderColor='var(--no)'; f.placeholder='Code incorrect'; }
+  };
+}
+
+/* ============================ ENREGISTREMENT ============================ */
+function buildDoc(state){
+  const css = document.getElementById('qcm-style').textContent;
+  const js  = document.getElementById('qcm-script').textContent;
+  const head = document.head.innerHTML.replace(/<style id="qcm-style">[\s\S]*?<\/style>/, '');
+  return '<!doctype html>\n<html lang="fr">\n<head>' + head +
+    '<style id="qcm-style">' + css + '<\/style></head>\n<body>\n<div id="app"></div>\n' +
+    '<script id="qcm-data" type="application/json">' + JSON.stringify(state).replace(/<\//g,'<\\/') + '<\/script>\n' +
+    '<script id="qcm-script">' + js + '<\/script>\n</body>\n</html>';
+}
+
+async function submit(){
+  const rec = {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,7),
+    name, track, answers: answers.slice(), ts: Date.now(), ms: Date.now() - startedAt
+  };
+  sessionStorage.setItem('qcm-pending', JSON.stringify(rec));
+  sessionStorage.setItem('qcm-tries','0');
+  await persist(rec);
+}
+
+function payloadOf(r){
+  const b = BANKS[r.track], sc = scoreOf(r);
+  const missed = b.q.map((q,i) => r.answers[i] !== q.a ? (i+1) : null).filter(x => x).join(', ');
+  return { id:r.id, name:r.name, track:r.track, trackName:b.name, ts:r.ts, ms:r.ms,
+           score:sc, total:b.q.length, pct:pct(sc,b.q.length),
+           answers:r.answers.map(x => x===null||x===undefined?9:x).join(''), missed:missed };
+}
+
+/* Renvoie 'ok' (écriture confirmée par le script Google), 'blind' (envoyé sans
+   confirmation possible) ou 'ko' (échec réseau). On ne dit jamais au délégué que
+   son résultat est enregistré tant que le script ne l'a pas confirmé. */
+async function sendRemote(rec){
+  const body = JSON.stringify(payloadOf(rec));
+  try {
+    const res = await fetch(ENDPOINT, { method:'POST', redirect:'follow',
+      headers:{'Content-Type':'text/plain;charset=utf-8'}, body: body });
+    if (res.ok) {
+      const j = await res.json().catch(() => null);
+      if (j && j.ok) return 'ok';
+    }
+  } catch(e){ /* CORS ou réseau : on retente en aveugle */ }
+  try {
+    await fetch(ENDPOINT, { method:'POST', mode:'no-cors', redirect:'follow',
+      headers:{'Content-Type':'text/plain;charset=utf-8'}, body: body });
+    return 'blind';
+  } catch(e){ return 'ko'; }
+}
+
+async function loadRemote(){
+  if (!ENDPOINT || remoteState === 'load') return;
+  remoteState = 'load'; render();
+  try {
+    const res = await fetch(ENDPOINT + '?action=list', { method:'GET', redirect:'follow' });
+    const j = await res.json();
+    const list = (j && Array.isArray(j.results)) ? j.results : [];
+    REMOTE = list.map(o => {
+      const b = BANKS[o.track]; if (!b || typeof o.answers !== 'string') return null;
+      const ans = o.answers.split('').map(c => c === '9' ? null : +c);
+      if (ans.length !== b.q.length) return null;
+      return { id:o.id, name:o.name, track:o.track, answers:ans, ts:+o.ts, ms:+o.ms || 0 };
+    }).filter(Boolean);
+    remoteState = 'ok';
+  } catch(e){ remoteState = 'ko'; }
+  render();
+}
+
+async function persist(rec){
+  lastResult = rec; view = 'result';
+
+  if (ENDPOINT) {
+    const st = await sendRemote(rec);
+    saveNotice = st === 'ok' ? ''
+      : st === 'blind' ? 'envoi non confirmé — transmettez le code ci-dessous par sécurité'
+      : 'envoi automatique impossible — transmettez le code ci-dessous';
+    sessionStorage.removeItem('qcm-pending'); sessionStorage.removeItem('qcm-tries');
+    render(); return;
+  }
+
+  const tries = +(sessionStorage.getItem('qcm-tries') || 0);
+  let api = null;
+  try { api = (window.claude && window.claude.use) ? await window.claude.use('artifact') : null; } catch (e) { api = null; }
+  if (!api) { saveNotice = 'score à transmettre par code (voir ci-dessous)'; render(); return; }
+  if (tries >= 3) { saveNotice = 'score à transmettre par code (voir ci-dessous)'; render(); return; }
+  try {
+    sessionStorage.setItem('qcm-tries', String(tries + 1));
+    const next = { results: STATE.results.concat([rec]) };
+    await api.publish(buildDoc(next));   // la vue se recharge ; le résultat est repris au chargement
+  } catch (e) {
+    if (e && e.code === 'conflict') {
+      setTimeout(() => location.reload(), 400 + Math.random() * 800);
+      return;
+    }
+    saveNotice = (e && (e.code === 'not_writer' || e.code === 'not_granted'))
+      ? 'score à transmettre par code (voir ci-dessous)'
+      : 'score à transmettre par code (voir ci-dessous)';
+    render();
+  }
+}
+
+/* ============================ DÉMARRAGE ============================ */
+(function init(){
+  const pending = sessionStorage.getItem('qcm-pending');
+  if (pending) {
+    const rec = JSON.parse(pending);
+    const saved = STATE.results.some(r => r.id === rec.id);
+    if (saved) {
+      sessionStorage.removeItem('qcm-pending'); sessionStorage.removeItem('qcm-tries');
+      lastResult = rec; view = 'result'; name = rec.name; track = rec.track;
+      render(); return;
+    }
+    name = rec.name; track = rec.track;
+    render();                       // affiche l'accueil le temps de la reprise
+    persist(rec);                   // nouvelle tentative après conflit
+    return;
+  }
+  render();
+})();
+</script>
+</body>
+</html>
